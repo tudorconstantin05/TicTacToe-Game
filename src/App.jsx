@@ -17,6 +17,20 @@ function App() {
   useEffect(() => {
     const isComputerTurn = squares.filter(square => square !== null).length % 2 === 1;
 
+    const linesOccupiedX = (a,b,c) => {
+      return lines.filter(squareIndexes => {
+        const squareValues = squareIndexes.map(index => squares[index])
+        return JSON.stringify([a,b,c].sort()) === JSON.stringify(squareValues.sort())
+
+      })
+    };
+
+    const playerWin = () => linesOccupiedX('x', 'x', 'x').length > 0;
+
+    if (playerWin){
+      alert('player wins');
+    }
+
     const putComputerAt = index => {
       let newSquares = squares;
       newSquares[index] = 'o';

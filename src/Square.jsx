@@ -1,6 +1,8 @@
-function Square(){
+function Square(props){
     return(
-        <div className={'square'}/>
+        <div className={'square'} {...props}>
+            {props.x ? 'x' : (props.o ? 'o' : '')}
+        </div>
     );
 }
 

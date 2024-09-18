@@ -13,11 +13,12 @@ const lines = [
 
 function App() {
   const [squares, setSquares] = useState(defaultSquares);
+  const [winner, setWinner] = useState(null);
 
   useEffect(() => {
     const isComputerTurn = squares.filter(square => square !== null).length % 2 === 1;
 
-    const linesOccupiedX = (a,b,c) => {
+    const linesOccupied = (a,b,c) => {
       return lines.filter(squareIndexes => {
         const squareValues = squareIndexes.map(index => squares[index])
         return JSON.stringify([a,b,c].sort()) === JSON.stringify(squareValues.sort())
@@ -25,10 +26,17 @@ function App() {
       })
     };
 
-    const playerWin = () => linesOccupiedX('x', 'x', 'x').length > 0;
+    const emptyIndexes = squares.map((square, index) => square === null ? index : null).filter(val => val !== null);
+
+    const playerWin = () => linesOccupied('x', 'x', 'x').length > 0;
+    const computerWin = () => linesOccupied('o', 'o', 'o').length > 0;
 
     if (playerWin){
-      alert('player wins');
+      setWinner('x');
+    }
+
+    if (computerWin){
+      setWinner('o');
     }
 
     const putComputerAt = index => {
@@ -38,8 +46,29 @@ function App() {
     }
 
     if (isComputerTurn) {
-      const emptyIndexes = squares.map((square, index) => square === null ? index : null).filter(val => val !== null);
-      
+      const winningPossibilities = linesOccupied('o', 'o', null)
+
+      const linesToBlock = linesOccupied('x', 'x', null);
+
+      const linesToContinue = linesOccupied('o', null, null);
+
+      if (winningPossibilities.length > 0){
+        const winPosition = winningPossibilities[0].filter(index => squares[index] === null)[0];
+        putComputerAt(winPosition);
+        return;
+      }
+
+      if (linesToBlock.length > 0){
+        const blockPosition = linesToBlock[0].filter(index => squares[index] === null)[0];
+        putComputerAt(blockPosition);
+        return;
+      }
+
+      if (linesToContinue.length > 0){
+        putComputerAt(linesToContinue[0].filter(index => squares[index] === null)[0]);
+        return;
+      }
+
       const randomIndex = emptyIndexes [Math.ceil(Math.random() * emptyIndexes.length)];
 
       putComputerAt(randomIndex);
@@ -70,9 +99,18 @@ function App() {
 
         onClick={() => handleSquareClick(index)}/>)}
       </Board>
+      {!!winner && winner === 'x' &&(
+      <div className='result green'>
+        YOU WON!
+      </div>
+      )}
+      {!!winner && winner === 'o' &&(
+      <div className='result red'>
+        YOU LOST!
+      </div>
+      )}
     </main>
   )
 }
-
 
 export default App

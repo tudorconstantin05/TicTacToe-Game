@@ -44,3 +44,13 @@ div.result.orange{
   background-color: rgb(255, 155, 25);
   text-align: center;
 }
+
+.scoreboard {
+  margin-top: 20px;
+}
+
+button {
+  margin-top: 15px;
+  padding: 10px;
+  font-size: 16px;
+}

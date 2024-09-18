@@ -14,6 +14,8 @@ const lines = [
 function App() {
   const [squares, setSquares] = useState(defaultSquares);
   const [winner, setWinner] = useState(null);
+  const [playerScore, setPlayerScore] = useState(0);
+  const [computerScore, setComputerScore] = useState(0);
 
   useEffect(() => {
     const isComputerTurn = squares.filter(square => square !== null).length % 2 === 1;
@@ -24,36 +26,19 @@ function App() {
       });
     };
 
-    const linesOccupied = (a,b,c) => {
-      return lines.filter(squareIndexes => {
-        const squareValues = squareIndexes.map(index => squares[index])
-        return JSON.stringify([a,b,c].sort()) === JSON.stringify(squareValues.sort())
-
-      })
-    };
-
     const emptyIndexes = squares.map((square, index) => square === null ? index : null).filter(val => val !== null);
-
-    const playerWin = () => linesOccupied('x', 'x', 'x').length > 0;
-    const computerWin = () => linesOccupied('o', 'o', 'o').length > 0;
 
     if (checkWinner('x')) {
       setWinner('x');
+      setPlayerScore(prev => prev + 1);
     } 
     else if (checkWinner('o')) {
       setWinner('o');
+      setComputerScore(prev => prev + 1);
     }
     else if (squares.every(square => square !== null)) {
       setWinner('tie');
     }
-
-    const putComputerAt = index => {
-      if (index !== undefined) {
-        const newSquares = squares.slice();
-        newSquares[index] = 'o';
-        setSquares(newSquares);
-      }
-    };
 
     if (isComputerTurn && !winner) {
       const putComputerAt = (index) => {
@@ -65,18 +50,15 @@ function App() {
       };
       
       const winningPossibilities = lines.filter(line => 
-        line.filter(index => squares[index] === 'o').length === 2 &&
-        line.some(index => squares[index] === null)
+        line.filter(index => squares[index] === 'o').length === 2 && line.some(index => squares[index] === null)
       );
 
       const linesToBlock = lines.filter(line => 
-        line.filter(index => squares[index] === 'x').length === 2 &&
-        line.some(index => squares[index] === null)
+        line.filter(index => squares[index] === 'x').length === 2 && line.some(index => squares[index] === null)
       );
 
       const linesToContinue = lines.filter(line => 
-        line.filter(index => squares[index] === 'o').length === 1 &&
-        line.some(index => squares[index] === null)
+        line.filter(index => squares[index] === 'o').length === 1 && line.some(index => squares[index] === null)
       );
 
       if (winningPossibilities.length > 0) {
@@ -95,7 +77,7 @@ function App() {
       putComputerAt(randomIndex); 
     }
 
-  }, [squares], [winner])
+  }, [squares])
 
   function handleSquareClick(index) {
     const isPlayerTurn = squares.filter(square => square !== null).length % 2 === 0;
@@ -109,6 +91,11 @@ function App() {
   
     }
   }
+
+  const handlePlayAgain = () => {
+    setSquares(defaultSquares());
+    setWinner(null);
+  };
 
   return (
     <main>
@@ -128,6 +115,12 @@ function App() {
           {winner === 'x' ? 'YOU WON!' : winner === 'o' ? 'YOU LOST!' :  'IT IS A TIE!'}
         </div>
       )}
+      <button onClick={handlePlayAgain}>Play Again</button>
+      <div className="scoreboard">
+        <h2>Scoreboard</h2>
+        <p>Player (X): {playerScore}</p>
+        <p>Computer (O): {computerScore}</p>
+      </div>
     </main>
   )
 }

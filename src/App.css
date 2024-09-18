@@ -32,8 +32,15 @@ div.result{
 
 div.result.green{
   background-color: rgb(54, 255, 54);
+  text-align: center;
 }
 
 div.result.red{
   background-color: rgb(255, 54, 54);
+  text-align: center;
+}
+
+div.result.orange{
+  background-color: rgb(255, 155, 25);
+  text-align: center;
 }

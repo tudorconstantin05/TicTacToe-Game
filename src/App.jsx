@@ -28,11 +28,11 @@ function App() {
 
     const emptyIndexes = squares.map((square, index) => square === null ? index : null).filter(val => val !== null);
 
-    if (checkWinner('x')) {
+    if (checkWinner('x') && !winner) {
       setWinner('x');
       setPlayerScore(prev => prev + 1);
     } 
-    else if (checkWinner('o')) {
+    else if (checkWinner('o') && !winner) {
       setWinner('o');
       setComputerScore(prev => prev + 1);
     }
